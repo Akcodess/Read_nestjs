@@ -23,7 +23,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Production-ready NestJS backend with modular architecture (REST + WebSocket), strict TypeScript, centralized logging, and environment-driven configuration. The app initializes core services on boot for Dark, Realm, Nucleus, Gravity, and Light modules.
 
 ## Project setup
 
@@ -44,6 +44,16 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+### Additional scripts
+
+```bash
+# lint and auto-fix
+$ npm run lint
+
+# build TypeScript (used by start:prod)
+$ npm run build
+```
+
 ## Run tests
 
 ```bash
@@ -56,6 +66,34 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Architecture Overview
+
+- Modules: Authentication, Call, Dark, External, External API Test, Leads, Light, Nucleus, Property, Realm, Gravity, RT, Screen Recording, Common.
+- Boot flow: `CommonService` initializes `PropertyService`, configures `LoggerService`, then calls `init()` on Dark, Realm, Nucleus, Gravity, and Light services.
+- HTTP clients: Uses `axios` with `https.Agent` to honor `strictSsl` flags for external services.
+- Realtime: `LightService` builds a `ws/wss` URL from `LightServer` config and is used for WebSocket flows.
+- Config: `PropertyService` loads application properties and widget configs; server endpoints come from `Property.application.*Server` sections.
+
+## Service Initialization
+
+- Initialization order:
+  - Load properties: `PropertyService.init(...)`
+  - Configure logging: `LoggerService.init(...)`
+  - Initialize services: `DarkService.init(...)`, `RealmService.init(...)`, `NucleusService.init(...)`, `GravityService.init(...)`, `LightService.init(...)`
+
+## Conventions
+
+- Status handling via constants (no enums): `Success`, `Failed`, `AuthenticationSuccess`, `AuthenticationFailed` per module.
+- Messages per module under `src/<module>/constants/messages.constant.ts` (e.g., "Dark Service >>> Initialized").
+- Strict TypeScript: headers/payloads/response types live under `src/<module>/types`.
+- Controllers stay thin; business logic in services; inputs validated via DTO/types.
+
+## Logging
+
+- Scoped logging via `LoggerService.for('<ServiceName>')` for clear, per-module logs.
+- Log appender is configured from application properties.
+
 
 ## Deployment
 
