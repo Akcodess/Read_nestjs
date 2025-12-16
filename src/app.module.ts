@@ -13,6 +13,7 @@ import { GravityModule } from './gravity/gravity.module';
 import { RtModule } from './rt/rt.module';
 import { ScreenRecordingModule } from './screen-recording/screen-recording.module';
 import { CommonModule } from './common/common.module';
+import { ApiModule } from './api/api.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CommonModule } from './common/common.module';
     PropertyModule,
     RealmModule,
     GravityModule,
+    ApiModule,
     RtModule,
     ScreenRecordingModule,
     CommonModule,
